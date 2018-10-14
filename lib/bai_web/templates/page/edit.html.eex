@@ -1,0 +1,6 @@
+<form action="/action" method="get">
+<input type="hidden" name="action" value="Edytuj"/>
+<input type="hidden" name="par2" value="<%= @message.id %>"/>
+<input type="text" name="par" value="<%= @message.content %>" />
+<input type="submit" value="Edit">
+</form>

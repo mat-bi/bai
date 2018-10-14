@@ -1,0 +1,17 @@
+Logged as: <%= @username %> - <%= link "Logout", to: page_path(@conn, :logout) %>
+
+<table>
+<%= for message <- @messages do %>
+    <tr>
+      <td><%= message.id %></td>
+      <td><%= message.content %></td>
+      <td><%= message.user.username %></td>
+      <td><%= if message.user.username == @username do %><a href="/action?action=Usuń&par=<%= message.id %>">Delete</a><a href="/edit?id=<%= message.id %>">Edit</a><% end %></td>
+    </tr>
+<% end %>
+</table>
+<form action="<%= page_path(@conn, :act) %>" method="get">
+<input type="hidden" value="Dodaj" name="action">
+<input type="text" name="par"/>
+<input type="submit" value="Send">
+</form>
