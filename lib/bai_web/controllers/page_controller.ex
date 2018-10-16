@@ -71,6 +71,10 @@ defmodule BaiWeb.PageController do
         check(conn, id)
       %{"action" => "Edytuj", "par2" => id} ->
         check_permitted(conn, id)
+      %{"action" => "Dodaj_uprawnienie", "par" => id}  ->
+          check(conn, id)
+      %{"action" => "Odbierz", "par" => id}  ->
+          check(conn, id)
       _ -> conn
     end
   end
