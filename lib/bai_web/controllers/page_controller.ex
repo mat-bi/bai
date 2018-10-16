@@ -1,14 +1,13 @@
 defmodule BaiWeb.PageController do
   use BaiWeb, :controller
   alias Bai.Repo
-  alias Bai.Message
-  alias Bai.User
+  alias Bai.{Message, User, Permission}
 
   plug :check_logged when action in [:index, :act]
   plug :check_credentials when action == :act
 
   def index(conn, _params) do
-    render conn, "index.html", username: get_session(conn, :username), messages: Repo.all(Message) |> Repo.preload([:user])
+    render conn, "index.html", username: get_session(conn, :username), messages: Message.list_all(get_session(conn, :username))
   end
 
   def login(conn, _) do
@@ -27,6 +26,8 @@ defmodule BaiWeb.PageController do
                   |> Repo.insert!()
       "Usuń" -> Repo.delete!(Repo.get!(Message, par))
       "Edytuj" -> Repo.update!(Message.changeset(Repo.get!(Message, params["par2"]), %{content: par}))
+      "Dodaj_uprawnienie" -> Permission.add!(params["par2"], params["par"])
+      "Odbierz" -> Permission.revoke(params["par2"], params["par"])
     end
     redirect conn, to: page_path(conn, :index)
   end
@@ -60,18 +61,30 @@ defmodule BaiWeb.PageController do
     end
   end
 
+  def permissions(conn, params) do
+    render conn, "permissions.html", message_id: params["par"], permissions: Permission.list(params["par"])
+  end
+
   defp check_credentials(conn, _) do
     case conn.params do
       %{"action" => "Usuń", "par" => id}  ->
         check(conn, id)
       %{"action" => "Edytuj", "par2" => id} ->
-        check(conn, id)
+        check_permitted(conn, id)
       _ -> conn
     end
   end
 
   defp check(conn, id) do
     if Repo.get!(Message, id).user_id == Repo.get_by(User, username: get_session(conn, :username)).id do
+      conn
+    else
+      put_status(conn, :unauthorized) |> halt()
+    end
+  end
+
+  defp check_permitted(conn, id) do
+    if Permission.permitted?(Repo.get_by(User, username: get_session(conn, :username)).id, id) do
       conn
     else
       put_status(conn, :unauthorized) |> halt()

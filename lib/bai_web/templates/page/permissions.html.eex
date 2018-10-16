@@ -1,0 +1,14 @@
+<h2>Istniejące uprawnienia</h2>
+<ul>
+  <%= for permission <- @permissions do %>
+    <li><%= permission.username %><a href="/action?action=Odbierz&par=<%= @message_id %>&par2=<%= permission.username %>">Usuń</a></li>
+  <% end %>
+</ul>
+
+<h2>Dodaj nowe uprawnienie</h2>
+<form action="/action" method="get">
+  <input type="hidden" name="action" value="Dodaj_uprawnienie"/>
+  <input type="hidden" name="par" value="<%= @message_id %>"/>
+  <input type="text" name="par2" placeholder="Wpisz nazwę użytkownika, któremu chcesz nadać uprawnienie" />
+  <input type="submit" value="Dodaj">
+</form>

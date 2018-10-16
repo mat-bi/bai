@@ -5,8 +5,11 @@ Logged as: <%= @username %> - <%= link "Logout", to: page_path(@conn, :logout) %
     <tr>
       <td><%= message.id %></td>
       <td><%= message.content %></td>
-      <td><%= message.user.username %></td>
-      <td><%= if message.user.username == @username do %><a href="/action?action=Usuń&par=<%= message.id %>">Delete</a><a href="/edit?id=<%= message.id %>">Edit</a><% end %></td>
+      <td><%= message.username %></td>
+      <td><%= message.inserted_at %></td>
+      <td><%= if message.username == @username do %><a href="/action?action=Usuń&par=<%= message.id %>">Usuń</a><% end %></td>
+      <td><%= if message.permitted do %><a href="/edit?id=<%= message.id %>">Edytuj</a><% end %></td>
+      <td><%= if message.username == @username do %><a href="/permissions?par=<%= message.id %>">Uprawnienia</a><% end %></td>
     </tr>
 <% end %>
 </table>

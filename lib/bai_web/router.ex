@@ -24,6 +24,7 @@ defmodule BaiWeb.Router do
     get "/register", PageController, :register
     post "/register", PageController, :register_post
     get "/edit", PageController, :edit
+    get "/permissions", PageController, :permissions
   end
 
   # Other scopes may use custom stacks.
